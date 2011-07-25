@@ -21,8 +21,8 @@ main(int argc, char *argv[])
 	float numOfDay = 0;
 
 	myCmd[74] = 0;
-	time(&timep);
-	p=gmtime(&timep);
+	time(&timep);	/* Return the current time and put it in *TIMER if TIMER is not NULL.  */
+	p=gmtime(&timep);	/* Return the `struct tm' representation of *TIMER in Universal Coordinated Time */
 	printf("Press Crl+Z to break the execution.\n");
 	for(i_mon=0;i_mon<NumofMons;i_mon++)
 	{
