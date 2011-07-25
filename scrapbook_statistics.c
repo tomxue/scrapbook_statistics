@@ -7,7 +7,7 @@ main(int argc, char *argv[])
 	#define NumofDays 31
 	#define NumofMons 12
 	char *wday[]={"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};	
-	char myDate[9];	//20110723*
+	char myDate[9];	//20110431*
 	char myCmd1[57] = "find /mnt/hgfs/Dropbox/ScrapBook/data/ -maxdepth 1 -name ";
 	char myCmd2[8] = " | wc -l";
 	char myCmd[75];	
@@ -17,11 +17,13 @@ main(int argc, char *argv[])
 	FILE   *streamCmd;
 	int bufCmd[1];
 	int numOneDay = 0;
-	int numTotal = 0;
+	float numTotal = 0;
+	float numOfDay = 0;
 
 	myCmd[74] = 0;
 	time(&timep);
 	p=gmtime(&timep);
+	printf("Press Crl+Z to break the execution.\n");
 	for(i_mon=0;i_mon<NumofMons;i_mon++)
 	{
 		for(j_day=0;j_day<NumofDays;j_day++)
@@ -36,7 +38,9 @@ main(int argc, char *argv[])
 				ret = strcmp(myDate, "20110431");	//start day
 				if( ret == 0 )
 					{
-						printf("\nThe total learnt number is: %d\n", numTotal);
+						printf("\nThe total learnt number is: %d\n", (int)numTotal);
+						printf("The time span is: %d days\n", (int)numOfDay);
+						printf("The average learnt number is: %f\n\n", numTotal/numOfDay);
 						return;	
 					}
 
@@ -58,7 +62,8 @@ main(int argc, char *argv[])
 				fread( bufCmd, sizeof(int), sizeof(bufCmd), streamCmd);
 				//printf( "cmd result: %d\n", bufCmd[0] );
 				numOneDay = atoi(bufCmd);
-				numTotal += numOneDay;				
+				numTotal += numOneDay;	
+				numOfDay += 1;		
 				//printf( "cmd result: %d\n", numOneDay );
 				for(k=0;k<numOneDay;k++)
 					printf( "+" );
