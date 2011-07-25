@@ -14,8 +14,10 @@ main(int argc, char *argv[])
 	int i_mon, j_day, k, ret, bigNum;
 	time_t timep;
 	struct tm *p;
-	FILE   *stream;
-	char buf[4], num;
+	FILE   *streamCmd;
+	int bufCmd[1];
+	int numOneDay = 0;
+	int numTotal = 0;
 
 	myCmd[74] = 0;
 	time(&timep);
@@ -29,30 +31,40 @@ main(int argc, char *argv[])
 				else if( (p->tm_mon > i_mon) && (i_mon > 0) )
 					sprintf(myDate, "%d%.2d%.2d", (1900+p->tm_year), (1+p->tm_mon-i_mon), 31 - j_day);	
 				else
-					break;
-
-				//printf("Date: %s\n",myDate);
-				ret = strcmp(myDate, "20110431");
+					break;				
+				
+				ret = strcmp(myDate, "20110431");	//start day
 				if( ret == 0 )
-					return;
+					{
+						printf("\nThe total learnt number is: %d\n", numTotal);
+						return;	
+					}
+
 				myDate[8] = 42;//"*";
 				//printf("Date: %.8s  - The number of items I learnt is below\n",myDate);	
 				//printf("Date: %s\n",myDate);	
 				sprintf(myCmd, "%.57s%.9s%.8s", myCmd1, myDate, myCmd2);		
 				printf("\n");	//it is used to make the myCmd run in 1 line
-				if(argc > 1)	
-					system(myCmd);
+				if(argc > 1)	//"1" ascii code number
+					{
+						system(myCmd);
+						printf("Date: %s\n",myDate);
+					}
 				
-				stream = popen( myCmd, "r" ); 	
+				/* to read the shell result back to this program */
+				streamCmd = popen( myCmd, "r" ); 	
 				//printf( "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" );	
-				memset(buf, 0, sizeof(buf));		
-				fread( buf, sizeof(char), sizeof(buf), stream);
-				//printf( "cmd result: %d\n", buf[0] );
-				num = atoi(buf);
-				//printf( "cmd result: %d\n", num );
-				for(k=0;k<num;k++)
+				memset(bufCmd, 0, sizeof(bufCmd));		
+				fread( bufCmd, sizeof(int), sizeof(bufCmd), streamCmd);
+				//printf( "cmd result: %d\n", bufCmd[0] );
+				numOneDay = atoi(bufCmd);
+				numTotal += numOneDay;				
+				//printf( "cmd result: %d\n", numOneDay );
+				for(k=0;k<numOneDay;k++)
 					printf( "+" );
-				pclose(stream);
+				pclose(streamCmd);
+
+										
 			}
 				
 	}	
