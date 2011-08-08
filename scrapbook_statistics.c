@@ -12,6 +12,7 @@ main(int argc, char *argv[])
 	char myCmd1[57] = "find /mnt/hgfs/Dropbox/ScrapBook/data/ -maxdepth 1 -name ";
 	char myCmd2[8] = " | wc -l";
 	char myCmd[75];
+	char myCmd3[] = "mutt -s \"statistics\" tom.xue@nokia.com < asterisk.txt"; 
 	int i_mon, j_day, k, ret, bigNum;
 	time_t timep;
 	struct tm *p;
@@ -23,12 +24,13 @@ main(int argc, char *argv[])
 	int fd;
 	char lineEnd[]="\n";
 	char plus[]="+";
+	int times=0;
 
 	myCmd[74] = 0;
 	time(&timep);	/* Return the current time and put it in *TIMER if TIMER is not NULL.  */
 	p=gmtime(&timep);	/* Return the `struct tm' representation of *TIMER in Universal Coordinated Time */
 	printf("Press Crl+Z to break the execution.\n");
-	fd=open("asterisk.txt",O_RDWR | O_CREAT | O_APPEND,0777);
+	fd=open("asterisk.txt",O_RDWR |  O_TRUNC | O_APPEND,0777);
 	if(fd<0)
 		printf("Open file asterisk.txt failed!\n");
 	
@@ -77,17 +79,21 @@ main(int argc, char *argv[])
 				for(k=0;k<numOneDay;k++)
 				{
 					printf( "+" );
-					if(write(fd,plus,strlen(plus)+1) < 0)
+					if(write(fd,plus,strlen(plus)) < 0)
 						printf("write error!\n");				
 				}
-				write(fd,lineEnd,strlen(lineEnd)+1);	
+				write(fd,lineEnd,strlen(lineEnd));	
 				pclose(streamCmd);
+				
+				times = times + 1;
+				if(times > 20)
+					goto end;
 		}
 				
 	}	
 
-	close(fd);
-
 	end:	printf("The end.\n");
+		close(fd);
+		system(myCmd3);
 		return;
 }
