@@ -1,6 +1,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 main(int argc, char *argv[])
 {
@@ -14,16 +15,23 @@ main(int argc, char *argv[])
 	int i_mon, j_day, k, ret, bigNum;
 	time_t timep;
 	struct tm *p;
-	FILE   *streamCmd;
+	FILE *streamCmd;
 	int bufCmd[1];
 	int numOneDay = 0;
 	float numTotal = 0;
 	float numOfDay = 0;
+	int fd;
+	char lineEnd=0xa;
+	char plus="+";
 
 	myCmd[74] = 0;
 	time(&timep);	/* Return the current time and put it in *TIMER if TIMER is not NULL.  */
 	p=gmtime(&timep);	/* Return the `struct tm' representation of *TIMER in Universal Coordinated Time */
 	printf("Press Crl+Z to break the execution.\n");
+	fd=open("asterisk.txt",O_RDWR | O_CREAT | O_APPEND,0777);
+	if(fd<0)
+		printf("Open file asterisk.txt failed!\n");
+	
 	for(i_mon=0;i_mon<NumofMons;i_mon++)
 	{
 		for(j_day=0;j_day<NumofDays;j_day++)
@@ -65,14 +73,19 @@ main(int argc, char *argv[])
 				numTotal += numOneDay;	
 				numOfDay += 1;		
 				//printf( "cmd result: %d\n", numOneDay );
+				
 				for(k=0;k<numOneDay;k++)
+				{
 					printf( "+" );
+					write(fd,plus,1);				
+				}
+				write(fd,lineEnd,1);	
 				pclose(streamCmd);
-
-										
-			}
+		}
 				
 	}	
+
+	close(fd);
 
 	end:	printf("The end.\n");
 		return;
