@@ -11,7 +11,7 @@ main(int argc, char *argv[])
 	char myDate[9];	//20110431*
 	char myCmd1[57] = "find /mnt/hgfs/Dropbox/ScrapBook/data/ -maxdepth 1 -name ";
 	char myCmd2[8] = " | wc -l";
-	char myCmd[75];	
+	char myCmd[75];
 	int i_mon, j_day, k, ret, bigNum;
 	time_t timep;
 	struct tm *p;
@@ -21,8 +21,8 @@ main(int argc, char *argv[])
 	float numTotal = 0;
 	float numOfDay = 0;
 	int fd;
-	char lineEnd=0xa;
-	char plus="+";
+	char lineEnd[]="\n";
+	char plus[]="+";
 
 	myCmd[74] = 0;
 	time(&timep);	/* Return the current time and put it in *TIMER if TIMER is not NULL.  */
@@ -77,9 +77,10 @@ main(int argc, char *argv[])
 				for(k=0;k<numOneDay;k++)
 				{
 					printf( "+" );
-					write(fd,plus,1);				
+					if(write(fd,plus,strlen(plus)+1) < 0)
+						printf("write error!\n");				
 				}
-				write(fd,lineEnd,1);	
+				write(fd,lineEnd,strlen(lineEnd)+1);	
 				pclose(streamCmd);
 		}
 				
